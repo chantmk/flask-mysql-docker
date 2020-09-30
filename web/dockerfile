@@ -1,0 +1,7 @@
+FROM python:3.7-alpine
+EXPOSE 5000
+WORKDIR /web-app
+COPY requirement.txt /web-app
+RUN pip install -r requirement.txt
+COPY . /web-app
+CMD ["flask","run"]
