@@ -1,17 +1,34 @@
 from flask import Flask
-from flask_mysqldb import MySQL
+import mysql.connector
 
 app = Flask(__name__)
 
-app.config['MYSQL_USER'] = 'user'
-app.config['MYSQL_PASSWORD'] = 'password'
-app.config['MYSQL_DB'] = 'database'
-app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
-app.config['MYSQL_PORT'] = '3306'
-mysql = MySQL(app)
+def connect() :
+    config = {'user':'root', 'password':'root', 'port':'3306', 'database':'db','host':'mysql'}
+    db = mysql.connector.connect(**config)
+    cursor = db.cursor()
+    return db, cursor
+
+
+
+def add_timestamp() :
+    db, cursor = connect()
+    cursor.execute('INSERT INTO time_table (time_stamp) VALUES (CURRENT_TIMESTAMP)')
+    db.commit()
+     
+def get_timestamp() :
+    db, cursor = connect()
+    cursor.execute('SELECT * FROM time_table')
+    result = cursor.fetchall()
+    cursor.close()
+    db.close()
+    return result
+
+
 @app.route('/')
 def hello_world() :
-    return 0
+    add_timestamp()
+    return str(get_timestamp())
 
 if __name__ == '__main__' :
-    app.run(debug=True)
+    app.run(host='0.0.0.0')
