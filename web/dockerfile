@@ -1,7 +1,8 @@
 FROM python:3.7-alpine
 EXPOSE 5000
-WORKDIR /web-app
-COPY requirement.txt /web-app
-RUN pip install -r requirement.txt
-COPY . /web-app
-CMD ["flask","run"]
+WORKDIR /web
+# ENV FLASK_APP app.py
+# ENV FLASK_RUN_HOST 0.0.0.0
+COPY . /web
+RUN pip install -r requirements.txt
+CMD python app.py
